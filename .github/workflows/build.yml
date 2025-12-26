@@ -8,11 +8,18 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [windows-2022]
+        os: [ubuntu-24.04, windows-2022]
+        project:
+          - repository: nushell/nushell
+            ref: refs/tags/0.109.1
+            path: nushell
+
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Windows Config
+        if: matrix.os == 'windows-2022'
+        shell: pwsh
         run: |
           git config --system core.longpaths true
           echo "Enabled long paths in git"
@@ -27,6 +34,7 @@ jobs:
           echo "Removed link.exe in git"
 
       - name: Setup MSVC
+        if: matrix.os == 'windows-2022'
         uses: ilammy/msvc-dev-cmd@v1
         with:
           toolset: 14.29
@@ -36,12 +44,12 @@ jobs:
       - name: Checkout self
         uses: actions/checkout@v6
 
-      - name: Checkout target
+      - name: Checkout project
         uses: actions/checkout@v6
         with:
-          repository: uutils/coreutils
-          ref: refs/tags/0.5.0
-          path: coreutils
+          repository: ${{ matrix.project.repository }}
+          ref: ${{ matrix.project.ref }}
+          path: ${{ matrix.project.path }}
 
       - name: Copy config file
         shell: bash
@@ -51,15 +59,19 @@ jobs:
 
       - name: Build
         shell: bash
+        working-directory: ${{ matrix.project.path }}
         run: |
-          cd coreutils
           rm -f Cargo.lock
           cargo update
-          cargo b -r --no-default-features --features "cat cp ln ls mkdir mv rm touch yes"
+          cargo b -r --no-default-features --features ""
 
       - name: Archive
         uses: actions/upload-artifact@v5
         with:
-          name: coreutils_${{ matrix.os }}
+          name: coreutils_${{ runner.os }}
           path: |
-            coreutils/target/release/*.exe
+            ${{ matrix.core.path }}/target/release/*.so
+            ${{ matrix.core.path }}/target/release/*.dll
+
+            ${{ matrix.core.path }}/target/release/nu
+            ${{ matrix.core.path }}/target/release/nu.exe
