@@ -70,7 +70,7 @@ jobs:
       - name: Archive
         uses: actions/upload-artifact@v5
         with:
-          name: coreutils_${{ runner.os }}
+          name: ${{ env.PROJECT_BIN }}_${{ runner.os }}
           path: |
             ${{ env.PROJECT_PATH }}/target/release/*.so
             ${{ env.PROJECT_PATH }}/target/release/*.dll
