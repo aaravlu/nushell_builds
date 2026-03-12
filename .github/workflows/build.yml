@@ -8,7 +8,7 @@ jobs:
   build:
     env:
       PROJECT_REPOSITORY: nushell/nushell
-      PROJECT_REF: refs/tags/0.109.1
+      PROJECT_REF: refs/tags/0.111.0
       PROJECT_PATH: nushell
       PROJECT_BIN: nu
     strategy:
@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Windows Config
-        if: matrix.os == 'windows-2022'
+        if: runner.os == 'Windows'
         shell: pwsh
         run: |
           git config --system core.longpaths true
@@ -35,7 +35,7 @@ jobs:
           echo "Removed link.exe in git"
 
       - name: Setup MSVC
-        if: matrix.os == 'windows-2022'
+        if: runner.os == 'Windows'
         uses: ilammy/msvc-dev-cmd@v1
         with:
           toolset: 14.29
