@@ -8,7 +8,7 @@ jobs:
   build:
     env:
       PROJECT_REPOSITORY: nushell/nushell
-      PROJECT_REF: refs/tags/0.111.0
+      PROJECT_REF: refs/tags/0.112.1
       PROJECT_PATH: nushell
       PROJECT_BIN: nu
     strategy:
