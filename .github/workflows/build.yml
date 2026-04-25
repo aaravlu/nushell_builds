@@ -8,7 +8,7 @@ jobs:
   build:
     env:
       PROJECT_REPOSITORY: nushell/nushell
-      PROJECT_REF: refs/tags/0.112.1
+      PROJECT_REF: refs/tags/0.112.2
       PROJECT_PATH: nushell
       PROJECT_BIN: nu
     strategy:
@@ -65,10 +65,10 @@ jobs:
         run: |
           rm -f Cargo.lock
           cargo update
-          cargo b -r --no-default-features --features ""
+          cargo b -r --no-default-features
 
       - name: Archive
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ env.PROJECT_BIN }}_${{ runner.os }}
           path: |
